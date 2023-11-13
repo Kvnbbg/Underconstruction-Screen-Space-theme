@@ -17,18 +17,12 @@ html {
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   margin: 0;
   padding: 0;
   color: #fff;
   background-color: #333;
-  animation-name: backgroundCarousel;
-  animation-duration: var(--animation-slide-duration);
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
-  animation-timing-function: ease-in-out;
-  animation-delay: var(--animation-delay);
+  animation: backgroundCarousel var(--animation-slide-duration) infinite alternate ease-in-out var(--animation-delay);
   transition: background-color var(--animation-transition-background-color);
   width: 100vw;
   height: 100vh;
@@ -41,7 +35,7 @@ body {
 img {
   max-width: 100%;
   height: auto;
-  display: block; /* Remove the gap under the image */
+  display: block;
 }
 
 .heading {
@@ -59,9 +53,7 @@ img {
 }
 
 .heading-letter:hover {
-  animation-name: offlineAnimation;
-  animation-duration: 7s;
-  animation-iteration-count: infinite;
+  animation: offlineAnimation 7s infinite;
   border-radius: 35%;
   transform: rotate(360deg);
   box-shadow: var(--box-shadow);
@@ -79,13 +71,14 @@ img {
   text-align: center;
   display: flex;
 }
+
 .heading-animation:hover {
   border: 3% solid;
   border-radius: 28%;
 }
 
 @keyframes backgroundCarousel {
-  0% {
+  0%, 100% {
     background-image: url("./images/bg1.jpg");
   }
   33% {
@@ -94,10 +87,8 @@ img {
   66% {
     background-image: url("./images/bg3.png");
   }
-  100% {
-    background-image: url("./images/bg1.jpg");
-  }
 }
+
 @keyframes onlineAnimation {
   0% {
     background-color: blueviolet;
@@ -113,14 +104,8 @@ img {
   0% {
     background-color: blueviolet;
   }
-  25% {
+  25%, 50%, 75% {
     background-color: lightseagreen;
-  }
-  50% {
-    background-color: darkblue;
-  }
-  75% {
-    background-color: green;
   }
   100% {
     background-color: darkviolet;
@@ -148,20 +133,18 @@ footer {
   padding: 10px 0;
   text-align: center;
   font-size: 0.75em;
-  position: stiky; /* Changed from fixed to sticky */
+  position: sticky; /* Changed from fixed to sticky */
   bottom: 0;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.7); /* Added background color */
 }
 
-/* Added styles for a generic link within the footer */
 footer a {
   color: #fff;
   text-decoration: none;
   font-weight: bold;
 }
 
-/* Added hover effect for a link within the footer */
 footer a:hover {
   text-decoration: underline;
 }
@@ -173,6 +156,7 @@ ul {
   display: flex;
   gap: 10px;
 }
+
 ul:hover {
   transition: all 0.3s ease;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
@@ -197,6 +181,7 @@ li:hover {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0);
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
 }
+
 a {
   text-decoration: none;
   color: inherit;
@@ -219,6 +204,7 @@ button:hover {
   background-color: #005ecb;
   transition: background-color 0.4s ease;
 }
+
 button:active {
   transform: scale(1.1);
 }
@@ -240,5 +226,3 @@ button:focus {
 #actionButton:hover {
   background-color: darkblue;
 }
-
-
