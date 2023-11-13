@@ -17,7 +17,8 @@ html {
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   margin: 0;
   padding: 0;
   color: #fff;
@@ -66,7 +67,6 @@ img {
   box-shadow: var(--box-shadow);
   width: var(--box-width-height);
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
-
 }
 
 .heading-animation {
@@ -85,10 +85,18 @@ img {
 }
 
 @keyframes backgroundCarousel {
-  0% { background-image: url('./images/bg1.jpg');}
-  33% { background-image: url('./images/bg2.jpg');}
-  66% { background-image: url('./images/bg3.png');}
-  100% { background-image: url('./images/bg1.jpg');}
+  0% {
+    background-image: url("./images/bg1.jpg");
+  }
+  33% {
+    background-image: url("./images/bg2.jpg");
+  }
+  66% {
+    background-image: url("./images/bg3.png");
+  }
+  100% {
+    background-image: url("./images/bg1.jpg");
+  }
 }
 @keyframes onlineAnimation {
   0% {
@@ -226,20 +234,11 @@ button:focus {
 }
 
 #actionButton {
-  background-color: #4CAF50;
+  background-color: #4caf50;
 }
 
 #actionButton:hover {
   background-color: darkblue;
 }
 
-input[type="email"] {
-  font-family: inherit;
-  width: 300px;
-  height: 35px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  padding: 10px;
-  font-size: 16px;
-  margin: 10px 0;
-}
+
