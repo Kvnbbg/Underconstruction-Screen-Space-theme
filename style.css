@@ -78,16 +78,74 @@ img {
 }
 
 @keyframes backgroundCarousel {
-  0%, 100% {
+  0% {
     background-image: url("./images/bg1.jpg");
   }
-  33% {
+  4.7619% {
     background-image: url("./images/bg2.jpg");
   }
-  66% {
-    background-image: url("./images/bg3.png");
+  9.5238% {
+    background-image: url("./images/bg3.jpg");
+  }
+  14.2857% {
+    background-image: url("./images/bg4.jpg");
+  }
+  19.0476% {
+    background-image: url("./images/bg5.jpg");
+  }
+  23.8095% {
+    background-image: url("./images/bg6.jpg");
+  }
+  28.5714% {
+    background-image: url("./images/bg7.jpg");
+  }
+  33.3333% {
+    background-image: url("./images/bg8.jpg");
+  }
+  38.0952% {
+    background-image: url("./images/bg9.jpg");
+  }
+  42.8571% {
+    background-image: url("./images/bg10.jpg");
+  }
+  47.6190% {
+    background-image: url("./images/bg11.jpg");
+  }
+  52.3809% {
+    background-image: url("./images/bg12.jpg");
+  }
+  57.1428% {
+    background-image: url("./images/bg13.jpg");
+  }
+  61.9047% {
+    background-image: url("./images/bg14.jpg");
+  }
+  66.6666% {
+    background-image: url("./images/bg15.jpg");
+  }
+  71.4285% {
+    background-image: url("./images/bg16.jpg");
+  }
+  76.1904% {
+    background-image: url("./images/bg17.jpg");
+  }
+  80.9523% {
+    background-image: url("./images/bg18.jpg");
+  }
+  85.7142% {
+    background-image: url("./images/bg19.jpg");
+  }
+  90.4761% {
+    background-image: url("./images/bg20.jpg");
+  }
+  95.2380% {
+    background-image: url("./images/bg21.jpg");
+  }
+  100% {
+    background-image: url("./images/bg1.jpg");
   }
 }
+
 
 @keyframes onlineAnimation {
   0% {
