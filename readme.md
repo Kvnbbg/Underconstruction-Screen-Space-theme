@@ -2,6 +2,8 @@
 
 Welcome to the Underconstruction-Screen repository! This project provides a dynamic under-construction screen for your website, complete with a countdown timer. It's perfect for signaling ongoing development or maintenance.
 
+Follow the build: https://www.replit.com/@kvnbbg
+
 ## Table of Contents
 
 - [About](#about)
@@ -33,7 +35,7 @@ Ensure you have the following prerequisites installed:
 
 ### Installation
 
-1. Clone the repository: `git clone https://github.com/Kvnbbg/Underconstruction-Screen.git`
+1. Clone the repository: `git clone https://github.com/Kvnbbg/Underconstruction-Screen-Space-Theme.git`
 2. Include the required files in your project.
 3. Customize the HTML structure and styles as needed.
 

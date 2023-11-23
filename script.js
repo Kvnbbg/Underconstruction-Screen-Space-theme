@@ -1,7 +1,21 @@
-// Optimized and improved code based on the task provided
+// Code of links.html raw
+
+// Function to switch between different animation keyframes
+document.getElementById("modeToggle").addEventListener("change", function() {
+  const body = document.querySelector("body");
+  if (this.checked) {
+    body.style.animationName = "backgroundCarousel";
+    // Apply other styles or changes for this mode
+  } else {
+    body.style.animationName = "backgroundSpace";
+    // Apply styles or changes for the default mode
+  }
+});
+
+
+// Code of index.html optimized and improved
 
 // GET ELEMENTS
-const boxElement = document.querySelector(".box");
 const actionButtonElement = document.getElementById("actionButton");
 const chronoElement = document.getElementById("chrono");
 const subButtonElement = document.getElementById("subButton");
