@@ -1,23 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Space theme</title>
+    <title>Space Theme</title>
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- CSS -->
     <link href="style.css" rel="stylesheet" type="text/css" />
-
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <style>
+      body {
+        background-image: url('space-background.jpg');
+        background-size: cover;
+        color: white;
+      }
+      .heading-animation {
+        text-align: center;
+        margin-top: 20px;
+      }
+      .heading-letter {
+        font-size: 2em;
+        animation: fadeIn 1s ease-in-out infinite alternate;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      .navbar-light .navbar-nav .nav-link {
+        color: rgba(255,255,255,.5);
+      }
+      .navbar-light .navbar-nav .nav-link:hover {
+        color: white;
+      }
+      footer {
+        text-align: center;
+        padding: 10px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.7);
+      }
+      .content {
+        text-align: center;
+        margin-top: 50px;
+      }
+      .button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 1em;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+      .button:hover {
+        background-color: #0056b3;
+      }
+    </style>
   </head>
-
   <body>
-    <!-- Heading Animation -->
     <div class="heading-animation">
       <h5 class="heading">
-        <!-- Update the heading text -->
         <span class="heading-letter">S</span>
         <span class="heading-letter">P</span>
         <span class="heading-letter">A</span>
@@ -33,65 +75,24 @@
       </h5>
     </div>
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">Menu</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="links.html">Links</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Dropdown
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#">Disabled</a>
-          </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
-      </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="main">
-      <div class="content">
-        <p>
-          This website is under construction since today. The timer below
-          indicates the time since the construction started.
-        </p>
-        <h3>This website is under construction, since <span id="chrono"></span></h3>
-        <br />
-        <button id="actionButton" class="button">Start Countdown</button>
-      </div>
-    </main>
-
-    <!-- Footer -->
     <footer>
-      <a href="https://www.github.com/kvnbbg"><p>Copyright 2023 © Kevin Marville - Space theme</p></a>
+      <a href="https://www.x.com/techandstream"><p>Copyright 2023 © Kevin Marville - Space Theme</p></a>
     </footer>
 
-    <!-- Scripts -->
-    <script src="script.js"></script>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script>
+      document.getElementById('actionButton').addEventListener('click', function() {
+        var start = new Date();
+        setInterval(function() {
+          var now = new Date();
+          var elapsed = new Date(now - start);
+          var seconds = elapsed.getUTCSeconds();
+          var minutes = elapsed.getUTCMinutes();
+          var hours = elapsed.getUTCHours();
+          var days = elapsed.getUTCDate() - 1;
+          document.getElementById('chrono').textContent = days + ' days ' + hours + ' hours ' + minutes + ' minutes ' + seconds + ' seconds';
+        }, 1000);
+      });
+    </script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
