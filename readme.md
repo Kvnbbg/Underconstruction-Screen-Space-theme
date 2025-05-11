@@ -1,8 +1,6 @@
 # Underconstruction-Screen
 
-Welcome to the Underconstruction-Screen repository! This project provides a dynamic under-construction screen for your website, complete with a countdown timer. It's perfect for signaling ongoing development or maintenance.
-
-Follow the build: https://www.replit.com/@kvnbbg
+Welcome to the Underconstruction-Screen repository! It's perfect for signaling ongoing development while playing games.
 
 ## Table of Contents
 
@@ -15,13 +13,7 @@ Follow the build: https://www.replit.com/@kvnbbg
 
 ## About
 
-The Underconstruction-Screen project showcases a customizable under-construction page with a real-time countdown timer. It uses JavaScript to seamlessly calculate and display the time elapsed since the construction started, enhancing user experience during site maintenance.
-
-## Features
-
-- **Dynamic Countdown Timer:** Real-time updating of days, hours, minutes, and seconds.
-- **User Interaction:** Start or stop the countdown with a click of a button.
-- **Offline Support:** Disables the countdown button when the user is offline.
+The Underconstruction-Screen project showcases a customizable under-construction page with a space theme
 
 ## Getting Started
 
