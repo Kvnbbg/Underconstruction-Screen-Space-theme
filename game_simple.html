@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casse Brique Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            background: radial-gradient(circle at center, #4A90E2, #8E44AD);
+            background-size: 200% 200%;
+            animation: backgroundShift 10s ease-in-out infinite;
+            touch-action: manipulation;
+        }
+        @keyframes backgroundShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .game-popup {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .game-popup.hidden {
+            transform: scale(0.8);
+            opacity: 0;
+        }
+        .progress-bar {
+            transition: width 0.5s ease;
+        }
+        .brick-boss {
+            animation: bossPulse 2s infinite;
+        }
+        @keyframes bossPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .star-burst {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: yellow;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            animation: burst 0.5s ease-out forwards;
+        }
+        @keyframes burst {
+            to { transform: scale(2); opacity: 0; }
+        }
+        .focus-visible {
+            outline: 2px solid #FFD700;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 md:p-6 font-sans text-white">
+    <div class="container max-w-5xl w-full text-center mb-6">
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold">Casse Brique Adventure</h1>
+        <div class="mt-4 flex flex-col items-center gap-4">
+            <div class="flex items-center gap-2">
+                <label for="playerName" class="text-lg">Player Name:</label>
+                <input id="playerName" type="text" value="Kvnbbg" maxlength="12" class="p-2 rounded-md bg-gray-800 text-white focus-visible" aria-label="Player name">
+            </div>
+            <button id="toggleGameBtn" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-md text-lg transition-colors focus-visible">Start Game</button>
+        </div>
+    </div>
+
+    <div id="gamePopup" class="game-popup fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-900 rounded-lg shadow-2xl p-4 w-full max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] hidden">
+        <div class="flex flex-col gap-4">
+            <div class="flex justify-between items-center">
+                <h2 id="levelDisplay" class="text-xl md:text-2xl font-bold">Level Q1xSch</h2>
+                <div class="w-1/2 bg-gray-700 rounded-full h-4">
+                    <div id="progressBar" class="progress-bar bg-yellow-400 h-full rounded-full" style="width: 0%"></div>
+                </div>
+            </div>
+            <canvas id="gameCanvas" class="border border-gray-400 rounded w-full" style="aspect-ratio: 4/3;"></canvas>
+            <div class="flex justify-between">
+                <button id="nextLevelBtn" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md text-lg transition-colors focus-visible hidden">Next Level</button>
+                <button id="closeGameBtn" class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md text-lg transition-colors focus-visible">Close</button>
+            </div>
+            <div id="storyText" class="text-center text-sm md:text-base bg-gray-800 p-4 rounded-md animate-fadeIn hidden">
+                <p>Embark on your quest to defeat Sch!</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-auto bg-gray-800 text-white p-4 w-full text-center">
+        <div class="container max-w-screen-xl mx-auto">
+            <div class="social-links flex flex-wrap justify-center gap-4">
+                <a href="https://kvnbbg.fr" target="_blank" class="hover:text-blue-300">Blog</a>
+                <a href="https://www.instagram.com/techandstream" target="_blank" class="hover:text-blue-300">Instagram</a>
+                <a href="https://x.com/techandstream" target="_blank" class="hover:text-blue-300">X</a>
+            </div>
+            <p class="mt-4 text-sm">© 2025 Kevin Marville. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Game State and Configuration
+        const toggleGameBtn = document.getElementById('toggleGameBtn');
+        const gamePopup = document.getElementById('gamePopup');
+        const closeGameBtn = document.getElementById('closeGameBtn');
+        const nextLevelBtn = document.getElementById('nextLevelBtn');
+        const levelDisplay = document.getElementById('levelDisplay');
+        const progressBar = document.getElementById('progressBar');
+        const storyText = document.getElementById('storyText');
+        const playerNameInput = document.getElementById('playerName');
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let gameVisible = false;
+        let gameInitialized = false;
+        let currentLevel = { main: 1, sub: 1 };
+        let bricks = [];
+        let bossActive = false;
+        let player = { name: 'Kvnbbg', lives: 3, speed: 7 };
+        let enemyTechniques = [
+            { name: 'Kaze Surge', effect: { player: { speed: -2 }, enemy: { speed: 2 } }, duration: 5000 },
+            { name: 'Yami Shield', effect: { player: { lifeRegen: -1 }, enemy: { lifeRegen: 1 } }, duration: 10000 },
+            { name: 'Tenshi Strike', effect: { player: { speed: -1 }, enemy: { damage: 2, speed: -1 } }, duration: 7000 },
+            { name: 'Kumo Veil', effect: { player: { speed: -1 }, enemy: { invisible: true } }, duration: 3000 }
+        ];
+
+        // Input Validation
+        playerNameInput.addEventListener('input', () => {
+            let value = playerNameInput.value.replace(/[^a-zA-Z0-9]/g, '').slice(0, 12);
+            playerNameInput.value = value;
+            player.name = value || 'Kvnbbg';
+        });
+
+        // Canvas Resize
+        function resizeCanvas() {
+            const maxWidth = gamePopup.offsetWidth - 32;
+            const maxHeight = Math.min(window.innerHeight * 0.6, 600);
+            canvas.width = Math.min(maxWidth, maxHeight * 4 / 3);
+            canvas.height = canvas.width * 3 / 4;
+        }
+
+        // Toggle Game
+        toggleGameBtn.addEventListener('click', () => {
+            gameVisible = !gameVisible;
+            gamePopup.classList.toggle('hidden', !gameVisible);
+            toggleGameBtn.textContent = gameVisible ? 'Restart Game' : 'Start Game';
+            if (gameVisible && !gameInitialized) {
+                startGame();
+            }
+        });
+
+        closeGameBtn.addEventListener('click', () => {
+            gameVisible = false;
+            gamePopup.classList.add('hidden');
+            toggleGameBtn.textContent = 'Start Game';
+        });
+
+        // Game Logic
+        function startGame() {
+            resizeCanvas();
+            gameInitialized = true;
+
+            // Game Variables
+            const paddleWidth = canvas.width * 0.2;
+            const paddleHeight = canvas.height * 0.025;
+            let paddleX = (canvas.width - paddleWidth) / 2;
+            const ballRadius = canvas.width * 0.02;
+            let ballX = canvas.width / 2;
+            let ballY = canvas.height - 30;
+            let ballDX = canvas.width * 0.008;
+            let ballDY = -canvas.width * 0.008;
+            const brickRowCount = 4;
+            const brickColumnCount = 6;
+            const brickWidth = canvas.width * 0.14;
+            const brickHeight = canvas.height * 0.05;
+            const brickPadding = canvas.width * 0.02;
+            const brickOffsetTop = canvas.height * 0.1;
+            const brickOffsetLeft = (canvas.width - (brickColumnCount * (brickWidth + brickPadding) - brickPadding)) / 2;
+
+            let rightPressed = false;
+            let leftPressed = false;
+            let activeTechniques = [];
+
+            // Initialize Bricks
+            function initBricks() {
+                bricks = [];
+                bossActive = currentLevel.sub === 3 && currentLevel.main % 2 === 0;
+                for (let c = 0; c < brickColumnCount; c++) {
+                    bricks[c] = [];
+                    for (let r = 0; r < brickRowCount; r++) {
+                        let brick = {
+                            x: 0,
+                            y: 0,
+                            status: 1,
+                            isBoss: bossActive && c === Math.floor(brickColumnCount / 2) && r === 0,
+                            health: bossActive && c === Math.floor(brickColumnCount / 2) && r === 0 ? 3 : 1,
+                            speed: bossActive && c === Math.floor(brickColumnCount / 2) && r === 0 ? canvas.width * 0.002 : 0
+                        };
+                        bricks[c][r] = brick;
+                    }
+                }
+            }
+            initBricks();
+
+            // Event Listeners
+            document.addEventListener('keydown', keyDownHandler);
+            document.addEventListener('keyup', keyUpHandler);
+            document.addEventListener('mousemove', mouseMoveHandler);
+            document.addEventListener('touchmove', touchMoveHandler);
+
+            function keyDownHandler(e) {
+                if (e.key === 'Right' || e.key === 'ArrowRight') rightPressed = true;
+                if (e.key === 'Left' || e.key === 'ArrowLeft') leftPressed = true;
+            }
+
+            function keyUpHandler(e) {
+                if (e.key === 'Right' || e.key === 'ArrowRight') rightPressed = false;
+                if (e.key === 'Left' || e.key === 'ArrowLeft') leftPressed = false;
+            }
+
+            function mouseMoveHandler(e) {
+                const relativeX = e.clientX - canvas.getBoundingClientRect().left;
+                if (relativeX > 0 && relativeX < canvas.width) {
+                    paddleX = relativeX - paddleWidth / 2;
+                }
+            }
+
+            function touchMoveHandler(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const relativeX = touch.clientX - canvas.getBoundingClientRect().left;
+                if (relativeX > 0 && relativeX < canvas.width) {
+                    paddleX = relativeX - paddleWidth / 2;
+                }
+            }
+
+            // Drawing Functions
+            function drawBall() {
+                ctx.beginPath();
+                ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+                ctx.fillStyle = '#FFD700';
+                ctx.fill();
+                ctx.closePath();
+            }
+
+            function drawPaddle() {
+                ctx.beginPath();
+                ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+                ctx.fillStyle = '#00CED1';
+                ctx.fill();
+                ctx.closePath();
+            }
+
+            function drawBricks() {
+                for (let c = 0; c < brickColumnCount; c++) {
+                    for (let r = 0; r < brickRowCount; r++) {
+                        const b = bricks[c][r];
+                        if (b.status === 1) {
+                            const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft + (b.isBoss ? Math.sin(Date.now() / 1000) * canvas.width * 0.05 : 0);
+                            const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
+                            b.x = brickX;
+                            b.y = brickY;
+                            ctx.beginPath();
+                            ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                            ctx.fillStyle = b.isBoss ? '#FF4500' : '#FF5733';
+                            ctx.fill();
+                            ctx.closePath();
+                            if (b.isBoss && b.health > 1) {
+                                ctx.fillStyle = '#FFFFFF';
+                                ctx.font = `${canvas.width * 0.04}px Arial`;
+                                ctx.fillText(b.health, brickX + brickWidth / 2, brickY + brickHeight / 2);
+                            }
+                        }
+                    }
+                }
+            }
+
+            function collisionDetection() {
+                for (let c = 0; c < brickColumnCount; c++) {
+                    for (let r = 0; r < brickRowCount; r++) {
+                        const b = bricks[c][r];
+                        if (b.status === 1) {
+                            if (ballX > b.x && ballX < b.x + brickWidth && ballY > b.y && ballY < b.y + brickHeight) {
+                                ballDY = -ballDY;
+                                b.health--;
+                                if (b.health <= 0) {
+                                    b.status = 0;
+                                    if (b.isBoss) triggerStarBurst(b.x + brickWidth / 2, b.y + brickHeight / 2);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Gamification and Animations
+            function triggerStarBurst(x, y) {
+                const star = document.createElement('div');
+                star.className = 'star-burst';
+                star.style.left = `${x + canvas.offsetLeft}px`;
+                star.style.top = `${y + canvas.offsetTop}px`;
+                document.body.appendChild(star);
+                setTimeout(() => star.remove(), 500);
+                if (Math.random() < 0.3) {
+                    confetti({ particleCount: 50, spread: 70, origin: { x: x / canvas.width, y: y / canvas.height } });
+                    if ('vibrate' in navigator) navigator.vibrate(50);
+                }
+            }
+
+            function applyEnemyTechnique() {
+                if (bossActive && Math.random() < 0.01) {
+                    const technique = enemyTechniques[Math.floor(Math.random() * enemyTechniques.length)];
+                    activeTechniques.push({ ...technique, startTime: Date.now() });
+                    storyText.innerHTML = `<p>Enemy uses ${technique.name}!</p>`;
+                    storyText.classList.remove('hidden');
+                    setTimeout(() => storyText.classList.add('hidden'), 2000);
+                }
+                activeTechniques = activeTechniques.filter(t => Date.now() - t.startTime < t.duration);
+                player.speed = 7;
+                bricks.forEach(row => row.forEach(b => b.speed = b.isBoss ? canvas.width * 0.002 : 0));
+                activeTechniques.forEach(t => {
+                    if (t.effect.player.speed) player.speed += t.effect.player.speed;
+                    if (t.effect.enemy.speed) bricks.forEach(row => row.forEach(b => { if (b.isBoss) b.speed += t.effect.enemy.speed }));
+                });
+            }
+
+            // Level Progression
+            function checkLevelComplete() {
+                const allBricksDestroyed = bricks.every(row => row.every(b => b.status === 0));
+                if (allBricksDestroyed) {
+                    nextLevelBtn.classList.remove('hidden');
+                    storyText.innerHTML = `<p>Congratulations, ${player.name}! Level Q${currentLevel.main}xSch-Q${currentLevel.sub} cleared!</p>`;
+                    storyText.classList.remove('hidden');
+                    confetti({ particleCount: 100, spread: 120 });
+                    progressBar.style.width = '100%';
+                    return true;
+                }
+                return false;
+            }
+
+            nextLevelBtn.addEventListener('click', () => {
+                currentLevel.sub++;
+                if (currentLevel.sub > 3) {
+                    currentLevel.main++;
+                    currentLevel.sub = 1;
+                }
+                levelDisplay.textContent = `Level Q${currentLevel.main}xSch-Q${currentLevel.sub}`;
+                initBricks();
+                progressBar.style.width = '0%';
+                nextLevelBtn.classList.add('hidden');
+                storyText.classList.add('hidden');
+                ballX = canvas.width / 2;
+                ballY = canvas.height - 30;
+                paddleX = (canvas.width - paddleWidth) / 2;
+            });
+
+            // Main Draw Loop
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawBricks();
+                drawBall();
+                drawPaddle();
+                collisionDetection();
+                applyEnemyTechnique();
+
+                // Ball Movement
+                if (ballX + ballDX > canvas.width - ballRadius || ballX + ballDX < ballRadius) {
+                    ballDX = -ballDX;
+                }
+                if (ballY + ballDY < ballRadius) {
+                    ballDY = -ballDY;
+                } else if (ballY + ballDY > canvas.height - ballRadius) {
+                    if (ballX > paddleX && ballX < paddleX + paddleWidth) {
+                        ballDY = -ballDY;
+                    } else {
+                        player.lives--;
+                        if (player.lives <= 0) {
+                            storyText.innerHTML = `<p>Game Over, ${player.name}! Try again?</p>`;
+                            storyText.classList.remove('hidden');
+                            gameVisible = false;
+                            gamePopup.classList.add('hidden');
+                            return;
+                        }
+                        ballX = canvas.width / 2;
+                        ballY = canvas.height - 30;
+                        ballDX = canvas.width * 0.008;
+                        ballDY = -canvas.width * 0.008;
+                        paddleX = (canvas.width - paddleWidth) / 2;
+                    }
+                }
+
+                ballX += ballDX;
+                ballY += ballDY;
+
+                // Paddle Movement
+                if (rightPressed && paddleX < canvas.width - paddleWidth) {
+                    paddleX += player.speed;
+                }
+                if (leftPressed && paddleX > 0) {
+                    paddleX -= player.speed;
+                }
+
+                // Progress Update
+                const remainingBricks = bricks.flat().filter(b => b.status === 1).length;
+                const totalBricks = brickRowCount * brickColumnCount;
+                progressBar.style.width = `${((totalBricks - remainingBricks) / totalBricks) * 100}%`;
+
+                if (gameVisible && !checkLevelComplete()) {
+                    requestAnimationFrame(draw);
+                }
+            }
+
+            draw();
+        }
+
+        // Resize Handling
+        window.addEventListener('resize', resizeCanvas);
+
+        // Technique List
+        const techniqueList = `
+# Enemy Techniques
+| Name          | Effect on Player                          | Effect on Enemy                          | Duration |
+|---------------|-------------------------------------------|------------------------------------------|----------|
+| Kaze Surge    | -2 paddle speed                           | +2 boss brick speed                      | 5s       |
+| Yami Shield   | -1 life regeneration (not implemented)    | +1 life regeneration (not implemented)   | 10s      |
+| Tenshi Strike | -1 paddle speed                           | +2 damage, -1 boss brick speed           | 7s       |
+| Kumo Veil     | -1 paddle speed                           | Temporary invisibility (not implemented) | 3s       |
+        `;
+        console.log(techniqueList);
+    </script>
+</body>
+</html>
