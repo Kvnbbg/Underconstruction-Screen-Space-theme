@@ -34,31 +34,60 @@
       footer {
         text-align: center;
         padding: 10px;
-        position: fixed;
-        bottom: 0;
         width: 100%;
         background: rgba(0, 0, 0, 0.7);
+        z-index: 2;
+        transform: translateZ(10px);
       }
       .content {
         text-align: center;
-        margin-top: 50px;
+        margin: 50px auto;
+        width: 90%;
+        max-width: 600px;
+        z-index: 2;
+        transform: translateZ(20px);
       }
-      .button {
-        background-color: #007bff;
+      .theme-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: clamp(1rem, 3vmin, 2rem);
+        margin-top: 20px;
+      }
+      .theme-button {
+        background: linear-gradient(90deg, #007bff, #0056b3);
         color: white;
         border: none;
-        padding: 10px 20px;
-        font-size: 1em;
+        padding: clamp(10px, 2vmin, 15px) clamp(20px, 4vmin, 30px);
+        font-size: clamp(1rem, 2vmin, 1.2rem);
         cursor: pointer;
-        border-radius: 5px;
+        border-radius: 50px;
+        min-width: 120px;
+        min-height: 44px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+        transform-style: preserve-3d;
+        transform: translateZ(30px);
       }
-      .button:hover {
-        background-color: #0056b3;
+      .theme-button:hover {
+        background: linear-gradient(90deg, #0056b3, #003d82);
+        transform: translateZ(30px) translateY(-5px) scale(1.05);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
       }
+      @media (max-width: 600px) {
+        .theme-button {
+          min-width: 100px;
+          padding: 8px 16px;
+          font-size: 0.9rem;
+        }
+        .content {
+          margin: 30px auto;
+      }}
     </style>
   </head>
   <body>
-    <div class="heading-animation">
+    <section>
+          <div class="heading-animation">
       <h5 class="heading">
         <span class="heading-letter">S</span>
         <span class="heading-letter">P</span>
@@ -74,9 +103,20 @@
         <br />
       </h5>
     </div>
+    </section>
+    <section>
+       <div class="content">
+      <h2>Choose Your Difficulty</h2>
+      <div class="theme-buttons">
+        <button class="theme-button" onclick="window.location.href='game_simple.html'">Simple</button>
+        <button class="theme-button" onclick="window.location.href='game_complex.html'">Complex</button>
+      </div>
+    </div>
+    </section>
+
 
     <footer>
-      <a href="https://www.x.com/techandstream"><p>Copyright 2023 © Kevin Marville - Space Theme</p></a>
+      <a href="https://www.x.com/techandstream"><p>Copyright 2025 © Kevin Marville - Space Theme</p></a>
     </footer>
 
     <script>
